@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -216,6 +215,31 @@
     </style>
 </head>
 <body class="select-none bg-slate-50">
+
+<!-- ================= POPUP MODAL (NEW) ================= -->
+<div id="welcome-popup" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-opacity duration-300">
+    <!-- Popup Content Box (No click-away function on the background) -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl transform transition-all scale-95 opacity-0" id="welcome-popup-content">
+        
+        <!-- Image Container -->
+        <img id="popup-img" src="" class="w-full h-48 object-cover hidden">
+        
+        <!-- Text & Buttons Container -->
+        <div class="p-5 text-center">
+            <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-2" id="popup-title">নোটিশ</h2>
+            <div id="popup-text" class="text-gray-600 dark:text-gray-300 text-sm mb-6 whitespace-pre-wrap font-medium"></div>
+            
+            <div class="flex flex-col gap-3 justify-center">
+                <!-- Action Button (Admin Controlled) -->
+                <a id="popup-action-btn" href="#" target="_blank" class="hidden w-full bg-sky-600 text-white px-4 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-sky-700 transition no-underline text-center"></a>
+                
+                <!-- Close Button -->
+                <button onclick="closePopup()" class="w-full bg-red-500 text-white px-4 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-red-600 transition">Close / বন্ধ করুন</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ====================================================== -->
 
 <div id="app-content" class="relative max-w-md mx-auto bg-slate-50 min-h-screen shadow-2xl">
     <header class="bg-white/90 backdrop-blur-md p-4 sticky top-0 z-40 flex justify-between items-center shadow-sm">
@@ -989,30 +1013,67 @@
 
     // --- 1. FIREBASE CONFIGURATION ---
     const firebaseConfig = {
-  apiKey: "AIzaSyD8Rnh08XGw9HdYi0BYGCVBKd0ENBQl0CU",
-  authDomain: "fh-top-up-2.firebaseapp.com",
-  databaseURL: "https://fh-top-up-2-default-rtdb.firebaseio.com",
-  projectId: "fh-top-up-2",
-  storageBucket: "fh-top-up-2.firebasestorage.app",
-  messagingSenderId: "214767016319",
-  appId: "1:214767016319:web:5f017307d5be94386d624a",
-  measurementId: "G-VYS9QHSSK6"
-};
+      apiKey: "AIzaSyD8Rnh08XGw9HdYi0BYGCVBKd0ENBQl0CU",
+      authDomain: "fh-top-up-2.firebaseapp.com",
+      databaseURL: "https://fh-top-up-2-default-rtdb.firebaseio.com",
+      projectId: "fh-top-up-2",
+      storageBucket: "fh-top-up-2.firebasestorage.app",
+      messagingSenderId: "214767016319",
+      appId: "1:214767016319:web:5f017307d5be94386d624a",
+      measurementId: "G-VYS9QHSSK6"
+    };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
-    // ✅ Realtime Database instance
     const rtdb = firebase.database();
 
     let currentUser = null;
     let userBalance = 0;
     let selectedProduct = null;
-    let howToVideoId = "dQw4w9WgXcQ"; // Default video ID
+    let howToVideoId = "dQw4w9WgXcQ"; 
     
-    // Fixed Logo from Admin Requirement
     const fixedLogoLink = "https://i.postimg.cc/Qdk4YX2t/file-00000000a04072069e266d3f98e37001-(1).png";
 
-    // --- Load How to Add Money Video from Admin Panel ---
+    // --- POPUP LOGIC ---
+    function showPopup(imgUrl, text, btnText, btnLink) {
+        const popup = document.getElementById('welcome-popup');
+        const content = document.getElementById('welcome-popup-content');
+        const imgEl = document.getElementById('popup-img');
+        const textEl = document.getElementById('popup-text');
+        const actionBtn = document.getElementById('popup-action-btn');
+
+        if (imgUrl) { 
+            imgEl.src = imgUrl; 
+            imgEl.classList.remove('hidden'); 
+        } else { 
+            imgEl.classList.add('hidden'); 
+        }
+
+        textEl.innerHTML = text || "Welcome to KHELO TOPUP!";
+
+        if (btnText && btnLink) {
+            actionBtn.innerText = btnText;
+            actionBtn.href = btnLink;
+            actionBtn.classList.remove('hidden');
+        } else {
+            actionBtn.classList.add('hidden');
+        }
+
+        popup.classList.remove('hidden');
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closePopup() {
+        const popup = document.getElementById('welcome-popup');
+        const content = document.getElementById('welcome-popup-content');
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => { popup.classList.add('hidden'); }, 300);
+    }
+
     function loadHowToVideo() {
         db.collection("settings").doc("videos").get().then((doc) => {
             if (doc.exists && doc.data().howToAddMoney) {
@@ -1024,7 +1085,6 @@
         });
     }
 
-    // --- Update Video Frame ---
     function updateVideoFrame() {
         const videoFrame = document.getElementById("new-tutorial-video");
         if (videoFrame) {
@@ -1033,29 +1093,22 @@
         const oldFrame = document.getElementById("how-to-add-money-video");
         if(oldFrame) oldFrame.src = `https://www.youtube.com/embed/${howToVideoId}`;
     }
+
     let selectedGameId = null;
     let selectedGameName = "";
     let selectedGameType = 'uid';
     let gamesData = {};
-    // ✅ Auto Payment Flag
     let isAutoPayEnabled = false;
-    let isManualMode = false; // To track if user chose Manual Pay
-    
-    // ✅ Store Admin Numbers globally to sync real-time
+    let isManualMode = false; 
     let adminPaymentNumbers = { bKash: '', Nagad: '', Rocket: '' };
-    
-    // ✅ New State for Payment Selection
-    let selectedPaymentMethod = 'wallet'; // 'wallet' or 'instant'
-    // ✅ State to track if we are in Direct Buy mode (Instant Pay)
+    let selectedPaymentMethod = 'wallet'; 
     let isDirectBuy = false;
     let pendingDirectOrder = null;
 
-    // Load Live Admin Numbers
     function loadLiveAdminNumbers() {
         db.collection("admin").doc("payment").onSnapshot(doc => {
             if(doc.exists) {
                 adminPaymentNumbers = doc.data();
-                // If currently on payment page (step 3), update live
                 if (currentPaymentMethod && document.getElementById('am-step-3').classList.contains('hidden') === false) {
                     const num = adminPaymentNumbers[currentPaymentMethod.toLowerCase()] || adminPaymentNumbers[currentPaymentMethod] || "Not Available";
                     document.getElementById('pay-admin-number').innerText = num;
@@ -1072,15 +1125,57 @@
                 
                 isAutoPayEnabled = data.autoPayEnabled === true;
                 
+                // POPUP CHECK (Show only once per session)
+                if (data.popupEnabled && !sessionStorage.getItem('popupShown')) {
+                    showPopup(data.popupImage, data.popupText, data.popupButtonText, data.popupButtonLink);
+                    sessionStorage.setItem('popupShown', 'true');
+                }
+
                 document.getElementById('about-site-name').innerText = siteName;
                 document.title = siteName;
                 
-                // Keep the hardcoded logo applied
                 document.getElementById('header-logo-img').src = fixedLogoLink;
                 document.getElementById('about-logo-img').src = fixedLogoLink;
                 document.getElementById('step2-logo').src = fixedLogoLink;
                 document.getElementById('step2-center-logo').src = fixedLogoLink;
                 document.getElementById('pay-site-logo-small').src = fixedLogoLink;
+
+                if(data.notice) document.getElementById('notice-text').innerText = data.notice;
+                const waNum = data.whatsapp ? String(data.whatsapp).replace(/\s/g, '') : "0";
+                const tgLink = data.telegram || "#";
+                const appLink = data.appLink || "#";
+                const fbLink = data.facebook || "#";
+                const ytLink = data.youtube || "#";
+                const waLink = `https://wa.me/${waNum}`;
+
+                const promoContainer = document.getElementById('promo-banner-container');
+                const promoImg = document.getElementById('promo-banner-img');
+                const promoLink = document.getElementById('promo-banner-link');
+                if(data.promoImageUrl && promoContainer && promoImg && promoLink) {
+                    promoImg.src = data.promoImageUrl;
+                    promoLink.href = data.promoImageLink || "#";
+                    promoContainer.classList.remove('hidden');
+                } else if(promoContainer) {
+                    promoContainer.classList.add('hidden');
+                }
+
+                document.getElementById('home-whatsapp').href = waLink;
+                document.getElementById('home-telegram').href = tgLink;
+                
+                const homeAppBtn = document.getElementById('home-app-dl');
+                homeAppBtn.href = appLink;
+                homeAppBtn.onclick = (e) => { if(appLink === "#") { e.preventDefault(); Swal.fire('Notice', 'App coming soon!', 'info'); } };
+
+                document.getElementById('link-whatsapp').href = waLink;
+                document.getElementById('link-telegram').href = tgLink;
+
+                document.getElementById('about-facebook').href = fbLink;
+                document.getElementById('about-youtube').href = ytLink;
+                document.getElementById('about-telegram').href = tgLink;
+                document.getElementById('about-whatsapp').href = waLink;
+                document.getElementById('contact-whatsapp').href = waLink;
+                document.getElementById('contact-telegram').href = tgLink;
+                document.getElementById('contact-facebook').href = fbLink;
             }
         });
         
@@ -1131,12 +1226,10 @@
         .catch((err) => Swal.fire('Login Failed', err.message, 'error'));
     }
     
-    // Google Login Function - Updated to ensure user doc creation
     function handleGoogleLogin() {
         var provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider).then((result) => {
             const user = result.user;
-            // Check if user doc exists, if not create it
             const userRef = db.collection('users').doc(user.uid);
             userRef.get().then((docSnapshot) => {
                 if (!docSnapshot.exists) {
@@ -1150,37 +1243,22 @@
                 }
             }).then(() => {
                 showSec('home');
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Logged in successfully',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                Swal.fire({ position: 'top-end', icon: 'success', title: 'Logged in successfully', showConfirmButton: false, timer: 1500 });
             });
         }).catch((error) => {
             Swal.fire('Error', error.message, 'error');
         });
     }
 
-    function showAuthPage() {
-        showSec('auth');
-    }
-
-    function handleLogout() { 
-        auth.signOut().then(() => {
-             showSec('home');
-        }); 
-    }
+    function showAuthPage() { showSec('auth'); }
+    function handleLogout() { auth.signOut().then(() => { showSec('home'); }); }
 
     auth.onAuthStateChanged((user) => {
         if (user) {
             currentUser = user;
-            // Check if currently on auth page, if so go home
             if(!document.getElementById('auth-sec').classList.contains('hidden')){
                 showSec('home');
             }
-            
             document.getElementById('header-login-container').classList.add('hidden');
             document.getElementById('header-balance-container').classList.remove('hidden');
             
@@ -1191,14 +1269,12 @@
             document.getElementById('header-login-container').classList.remove('hidden');
             document.getElementById('header-balance-container').classList.add('hidden');
             
-            // Reset profile data
             const emptyName = "-";
             if(document.getElementById('acc-profile-name')) document.getElementById('acc-profile-name').innerText = emptyName;
             if(document.getElementById('acc-email')) document.getElementById('acc-email').innerText = emptyName;
         }
     });
     
-    // Always load content
     loadAppContent();
 
     function loadUserData(uid) {
@@ -1209,18 +1285,15 @@
                 const userName = data.name || "User";
                 const userEmail = data.email || "";
 
-                // Update Header
                 document.getElementById('header-balance').innerText = userBalance;
                 document.getElementById('topup-balance-display').innerText = userBalance.toFixed(2);
 
-                // Update New Account Section
                 const accNameEl = document.getElementById('acc-profile-name');
                 const accEmailEl = document.getElementById('acc-email');
                 const accBalEl = document.getElementById('acc-profile-balance');
                 const accBalCardEl = document.getElementById('acc-balance-card');
                 const accPinEl = document.getElementById('acc-support-pin');
                 
-                // Profile Image / Initial Logic
                 const imgContainer = document.getElementById('acc-profile-img');
                 const initialContainer = document.getElementById('profile-initial');
                 
@@ -1238,8 +1311,6 @@
                 if(accEmailEl) accEmailEl.innerText = userEmail;
                 if(accBalEl) accBalEl.innerText = userBalance;
                 if(accBalCardEl) accBalCardEl.innerText = userBalance.toFixed(2);
-                
-                // Generate Support Pin from UID (Real Info)
                 if(accPinEl) accPinEl.innerText = uid.substring(0, 6).toUpperCase();
             }
         });
@@ -1271,7 +1342,6 @@
                     const price = parseInt(data.price || 0);
                     totalSpent += price;
 
-                    // Calculate Weekly Spent (Real Info)
                     if (data.date) {
                         const orderDate = data.date.toDate ? data.date.toDate() : new Date(data.date);
                         if (orderDate >= oneWeekAgo) {
@@ -1290,51 +1360,8 @@
         });
     }
 
-    // --- 3. APP CONTENT & FEATURES ---
-
+    // --- 3. APP CONTENT & FEATURES (WITH SORTING) ---
     function loadAppContent() {
-        db.collection("settings").doc("general").onSnapshot((doc) => {
-            if(doc.exists) {
-                const data = doc.data();
-                if(data.notice) document.getElementById('notice-text').innerText = data.notice;
-                const waNum = data.whatsapp ? String(data.whatsapp).replace(/\s/g, '') : "0";
-                const tgLink = data.telegram || "#";
-                const appLink = data.appLink || "#";
-                const fbLink = data.facebook || "#";
-                const ytLink = data.youtube || "#";
-                const waLink = `https://wa.me/${waNum}`;
-
-                const promoContainer = document.getElementById('promo-banner-container');
-                const promoImg = document.getElementById('promo-banner-img');
-                const promoLink = document.getElementById('promo-banner-link');
-                if(data.promoImageUrl && promoContainer && promoImg && promoLink) {
-                    promoImg.src = data.promoImageUrl;
-                    promoLink.href = data.promoImageLink || "#";
-                    promoContainer.classList.remove('hidden');
-                } else if(promoContainer) {
-                    promoContainer.classList.add('hidden');
-                }
-
-                document.getElementById('home-whatsapp').href = waLink;
-                document.getElementById('home-telegram').href = tgLink;
-                
-                const homeAppBtn = document.getElementById('home-app-dl');
-                homeAppBtn.href = appLink;
-                homeAppBtn.onclick = (e) => { if(appLink === "#") { e.preventDefault(); Swal.fire('Notice', 'App coming soon!', 'info'); } };
-
-                document.getElementById('link-whatsapp').href = waLink;
-                document.getElementById('link-telegram').href = tgLink;
-
-                document.getElementById('about-facebook').href = fbLink;
-                document.getElementById('about-youtube').href = ytLink;
-                document.getElementById('about-telegram').href = tgLink;
-                document.getElementById('about-whatsapp').href = waLink;
-                document.getElementById('contact-whatsapp').href = waLink;
-                document.getElementById('contact-telegram').href = tgLink;
-                document.getElementById('contact-facebook').href = fbLink;
-            }
-        });
-
         loadGamesAndCategories();
         loadTutorials();
         loadBanners();
@@ -1363,11 +1390,20 @@
             });
             
             let uncategorizedGames =[];
+            let allServices = [];
 
-            servicesSnap.forEach(doc => {
-                const game = { id: doc.id, ...doc.data() };
-                gamesData[doc.id] = game;
-                
+            // Add all services to array and SORT BY SLOT
+            servicesSnap.forEach(doc => allServices.push({ id: doc.id, ...doc.data() }));
+            
+            allServices.sort((a, b) => {
+                const slotA = a.slot !== undefined ? parseInt(a.slot) : 999999;
+                const slotB = b.slot !== undefined ? parseInt(b.slot) : 999999;
+                return slotA - slotB;
+            });
+
+            // Group sorted services
+            allServices.forEach(game => {
+                gamesData[game.id] = game;
                 if (game.categoryId && categoriesMap.has(game.categoryId)) {
                     categoriesMap.get(game.categoryId).games.push(game);
                 } else {
@@ -1490,8 +1526,7 @@
         selectedProduct = null;
         selectedGameType = gamesData[gameId].type || 'uid'; 
         
-        // Reset Logic
-        selectPaymentOption('wallet'); // Default to wallet
+        selectPaymentOption('wallet'); 
         isDirectBuy = false;
 
         document.getElementById('total-price').innerText = "0";
@@ -1610,10 +1645,7 @@
         
         if(!selectedProduct) return Swal.fire({ icon: 'warning', title: 'Select Pack', text: 'Please select a recharge package!' });
         
-        // --- LOGIC BRANCHING START ---
-        
         if (selectedPaymentMethod === 'instant') {
-            // INSTANT PAY FLOW
             isDirectBuy = true;
             currentDepositAmount = selectedProduct.price;
             pendingDirectOrder = {
@@ -1624,26 +1656,20 @@
                 gameType: selectedGameType
             };
             
-            // Go directly to Method Step of Add Money (reusing UI)
             document.getElementById('topup-sec').classList.add('hidden');
-            
-            // Show parent section
             document.getElementById('addmoney-sec').classList.remove('hidden');
-            
-            // Setup for Instant Pay Add Money
             document.getElementById('am-step-0').classList.add('hidden');
             document.getElementById('am-step-1').classList.add('hidden');
             document.getElementById('am-step-2').classList.remove('hidden');
             document.getElementById('am-step-3').classList.add('hidden');
             
             document.getElementById('method-title-text').innerText = "Direct Pay";
-            isManualMode = !isAutoPayEnabled; // Follow auto pay rules for direct pay too
+            isManualMode = !isAutoPayEnabled; 
             
             window.scrollTo({ top: 0, behavior: 'instant' });
             return;
         }
 
-        // --- WALLET PAY FLOW (Existing Logic) ---
         if(userBalance < selectedProduct.price) return Swal.fire({ icon: 'error', title: 'Low Balance', text: 'Please Add Money first.' });
 
         const result = await Swal.fire({
@@ -1667,7 +1693,6 @@
         }
     }
     
-    // Updated to accept playerId param for code reuse
     async function processVoucherOrder(playerId) {
         const stockRef = db.collection('services').doc(selectedGameId).collection('products').doc(selectedProduct.id).collection('stock');
         const availableStockSnap = await stockRef.where('status', '==', 'available').limit(1).get();
@@ -1700,7 +1725,7 @@
             });
 
             Swal.fire('Success', 'Voucher Purchased! Check History for Code.', 'success').then(() => {
-                window.location.reload(); // Refresh immediately
+                window.location.reload();
             });
 
         } catch (e) {
@@ -1720,7 +1745,7 @@
         })
         .then(() => {
             Swal.fire('Success', 'Order Placed Successfully!', 'success').then(() => {
-                window.location.reload(); // Refresh immediately
+                window.location.reload(); 
             });
         })
         .catch(err => Swal.fire('Error', err.message, 'error'));
@@ -1796,7 +1821,7 @@
             setTimeout(() => {
                 orderRef.update({ status: 'success' }).then(() => {
                     Swal.fire('Success!', 'Your Top-Up has been completed successfully.', 'success').then(() => {
-                        window.location.reload(); // Refresh immediately
+                        window.location.reload(); 
                     });
                 });
             }, 7000);
@@ -1860,20 +1885,17 @@
         
         if(secId === 'addmoney') {
             isDirectBuy = false;
-            // Reset Add Money Views completely
             document.getElementById('am-step-0').classList.add('hidden');
             document.getElementById('am-step-1').classList.add('hidden');
             document.getElementById('am-step-2').classList.add('hidden');
             document.getElementById('am-step-3').classList.add('hidden');
             
-            document.getElementById('new-amount-input').value = ""; // Clear amount
+            document.getElementById('new-amount-input').value = ""; 
             document.getElementById('method-title-text').innerText = "Payment Method";
             
             if (isAutoPayEnabled) {
-                // Show choice if Auto is enabled globally
                 document.getElementById('am-step-0').classList.remove('hidden');
             } else {
-                // Force manual if Auto is disabled
                 isManualMode = true;
                 document.getElementById('am-mode-badge').innerText = "MANUAL";
                 document.getElementById('am-step-1').classList.remove('hidden');
@@ -2095,11 +2117,19 @@
         }
     }
     
+    // BANNER SORTING LOGIC
     function loadBanners() {
         db.collection("banners").onSnapshot((snapshot) => {
             const wrapper = document.getElementById('slider-wrapper');
+            let banners = [];
+            snapshot.forEach((doc) => banners.push({id: doc.id, ...doc.data()}));
+            
+            // SORT BANNERS BY SLOT
+            banners.sort((a, b) => parseInt(a.slot || 999) - parseInt(b.slot || 999));
+
             let slidesHTML = "";
-            snapshot.forEach((doc) => { if(doc.data().image) slidesHTML += `<img src="${doc.data().image}" class="w-full h-full object-cover flex-shrink-0">`; });
+            banners.forEach(b => { if(b.image) slidesHTML += `<img src="${b.image}" class="w-full h-full object-cover flex-shrink-0">`; });
+            
             if(slidesHTML) { wrapper.innerHTML = slidesHTML; startSlider(); }
         });
     }
@@ -2124,7 +2154,6 @@
     let currentDepositAmount = 0;
     let currentPaymentMethod = '';
 
-    // Selection function Auto or Manual
     function selectPaymentType(type) {
         isManualMode = (type === 'manual');
         document.getElementById('am-mode-badge').innerText = isManualMode ? "MANUAL" : "AUTO";
@@ -2136,13 +2165,11 @@
         if (isManualMode) {
             document.getElementById('am-step-1').classList.remove('hidden');
         } else {
-            // Auto mode skips step 1 (Amount Input)
             currentDepositAmount = 'Auto'; 
             document.getElementById('am-step-2').classList.remove('hidden');
         }
     }
 
-    // Step 1 -> Step 2
     function goToMethodStep() {
         const inputVal = document.getElementById('new-amount-input').value;
         if (!inputVal || inputVal <= 0) {
@@ -2154,7 +2181,6 @@
         document.getElementById('am-step-2').classList.remove('hidden');
     }
 
-    // Step 2 -> Step 1 (Back)
     function backToAmountStep() {
         if (isDirectBuy) {
             document.getElementById('am-step-2').classList.add('hidden');
@@ -2171,11 +2197,9 @@
         }
     }
 
-    // Step 2 -> Step 3 (Payment Page)
     function goToPaymentPage(method, themeClass, logoUrl) {
         currentPaymentMethod = method;
         
-        // Update UI Elements for Payment Page
         document.getElementById('pay-method-logo').src = logoUrl;
         
         if (isManualMode) {
@@ -2183,19 +2207,15 @@
             document.getElementById('pay-amount-display').innerText = currentDepositAmount;
             document.getElementById('pay-amount-text-container').innerHTML = `<span class="mt-1">•</span><p>টাকার পরিমাণ: <span class="font-bold text-yellow-300">${currentDepositAmount}</span></p>`;
         } else {
-            // Auto Pay -> No Specific Amount displayed
             document.getElementById('pay-amount-display-container').classList.add('hidden');
             document.getElementById('pay-amount-text-container').innerHTML = `<span class="mt-1">•</span><p class="text-yellow-300 font-bold">আপনি যত টাকা এড করতে চান তত টাকা Send Money করুন।</p>`;
         }
         
-        // Update Method Names in Instruction Text
         document.querySelectorAll('.method-name').forEach(el => el.innerText = method);
         
-        // Reset and Apply Theme Color
         const themeCard = document.getElementById('payment-theme-card');
         themeCard.className = `rounded-xl shadow-lg overflow-hidden text-white mb-6 relative transition-colors duration-300 ${themeClass}`;
 
-        // Inject real-time Admin Number from global storage
         const num = adminPaymentNumbers[method.toLowerCase()] || adminPaymentNumbers[method] || "Not Available";
         document.getElementById('pay-admin-number').innerText = num;
 
@@ -2203,13 +2223,11 @@
         document.getElementById('am-step-3').classList.remove('hidden');
     }
 
-    // Step 3 -> Step 2 (Back)
     function backToMethodStep() {
         document.getElementById('am-step-3').classList.add('hidden');
         document.getElementById('am-step-2').classList.remove('hidden');
     }
 
-    // Copy Logic
     function copyPayNumber() {
         const num = document.getElementById('pay-admin-number').innerText;
         navigator.clipboard.writeText(num);
@@ -2223,7 +2241,6 @@
         });
     }
 
-    // Main Verify Handler
     async function handleNewVerify() {
         const trxId = document.getElementById('pay-trx-input').value.trim().toUpperCase();
         
@@ -2237,19 +2254,15 @@
             didOpen: () => { Swal.showLoading() }
         });
 
-        // 1. Check Duplication FIRST (for both Auto and Manual)
         const existingTrxCheck = await db.collection('deposits').where('trxId', '==', trxId).limit(1).get();
         if (!existingTrxCheck.empty) {
             return Swal.fire('Used', 'এই ট্রানজেকশন আইডিটি ইতিমধ্যে ব্যবহারিত হয়েছে!', 'error');
         }
 
         if (!isManualMode) {
-            // AUTO PAY SYSTEM (No amount input needed, direct logic)
             verifyAutoPayment(trxId);
         } else {
-            // MANUAL PAY SYSTEM
             if (isDirectBuy) {
-                // If direct buy is on manual mode, handle normally but mention wait.
                 submitDeposit(trxId, currentDepositAmount, true);
             } else {
                 submitDeposit(trxId, currentDepositAmount, false);
@@ -2257,7 +2270,6 @@
         }
     }
 
-    // Manual Deposit Logic
     function submitDeposit(trxId, amount, isForDirectOrder) {
         db.collection('deposits').add({
             userId: currentUser.uid, 
@@ -2274,14 +2286,12 @@
                 icon: 'success',
                 confirmButtonColor: '#3085d6'
             }).then(() => {
-                window.location.reload(); // Refresh App
+                window.location.reload(); 
             });
         }).catch(err => Swal.fire('Error', err.message, 'error'));
     }
 
-    // Auto Payment Logic (Now dynamically finds amount from Database)
     async function verifyAutoPayment(trxId) {
-        // Step 2: Check Realtime DB
         rtdb.ref('XNXANIKPAY').orderByChild('txid').equalTo(trxId).once('value', async (snapshot) => {
             if (!snapshot.exists()) {
                 return Swal.fire('Not Found', 'ট্রানজেকশন আইডি ডাটাবেইজে পাওয়া যায়নি। সঠিক আইডি দিন।', 'error');
@@ -2292,7 +2302,6 @@
                 paymentData = childSnapshot.val();
             });
 
-            // Auto fetch amount directly from verified payment data
             const amountToAdd = parseInt(paymentData.amount);
 
             if (isNaN(amountToAdd) || amountToAdd <= 0) {
@@ -2303,14 +2312,12 @@
 
             try {
                 let updatedBalance = 0;
-                // 1. Add Balance First
                 await db.runTransaction(async (transaction) => {
                     const userDoc = await transaction.get(userRef);
                     updatedBalance = (userDoc.data().balance || 0) + amountToAdd;
                     transaction.update(userRef, { balance: updatedBalance });
                 });
                 
-                // Add to deposits collection as used and approved
                 await db.collection('deposits').add({
                     userId: currentUser.uid,
                     userEmail: currentUser.email,
@@ -2321,15 +2328,11 @@
                     date: new Date()
                 });
                 
-                // Update local balance immediately
                 userBalance = updatedBalance;
                 document.getElementById('header-balance').innerText = userBalance;
                 document.getElementById('topup-balance-display').innerText = userBalance.toFixed(2);
                 
-                // 2. If Direct Buy (Instant Pay), Trigger Order Immediately IF Balance is Enough
                 if (isDirectBuy && pendingDirectOrder) {
-                    
-                    // Restore global selections
                     selectedProduct = pendingDirectOrder.product;
                     selectedGameId = pendingDirectOrder.gameId;
                     selectedGameName = pendingDirectOrder.gameName;
@@ -2352,7 +2355,6 @@
                              processUidOrder(pendingDirectOrder.playerId);
                         }
                     } else {
-                        // ব্যালেন্স পর্যাপ্ত না হলে ইউজারকে নোটিফিকেশন দেওয়া হবে এবং টাকা ওয়ালেটে থেকে যাবে।
                         Swal.fire({
                             title: 'Insufficient Balance',
                             text: `আপনার অ্যাকাউন্টে ৳${amountToAdd} অ্যাড হয়েছে। কিন্তু প্রোডাক্টের মূল্য ৳${pendingDirectOrder.product.price}, তাই আপনার বর্তমান ব্যালেন্স (৳${userBalance}) পর্যাপ্ত নয়। দয়া করে আরও ডিপোজিট করুন এবং আবার অর্ডার প্লেস করুন।`,
