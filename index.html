@@ -216,24 +216,15 @@
 </head>
 <body class="select-none bg-slate-50">
 
-<!-- ================= POPUP MODAL (NEW) ================= -->
+<!-- ================= POPUP MODAL ================= -->
 <div id="welcome-popup" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-opacity duration-300">
-    <!-- Popup Content Box (No click-away function on the background) -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl transform transition-all scale-95 opacity-0" id="welcome-popup-content">
-        
-        <!-- Image Container -->
         <img id="popup-img" src="" class="w-full h-48 object-cover hidden">
-        
-        <!-- Text & Buttons Container -->
         <div class="p-5 text-center">
             <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-2" id="popup-title">নোটিশ</h2>
             <div id="popup-text" class="text-gray-600 dark:text-gray-300 text-sm mb-6 whitespace-pre-wrap font-medium"></div>
-            
             <div class="flex flex-col gap-3 justify-center">
-                <!-- Action Button (Admin Controlled) -->
                 <a id="popup-action-btn" href="#" target="_blank" class="hidden w-full bg-sky-600 text-white px-4 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-sky-700 transition no-underline text-center"></a>
-                
-                <!-- Close Button -->
                 <button onclick="closePopup()" class="w-full bg-red-500 text-white px-4 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-red-600 transition">Close / বন্ধ করুন</button>
             </div>
         </div>
@@ -251,7 +242,6 @@
                 <i class="fas fa-wallet mr-1"></i> ৳ <span id="header-balance">0</span>
             </div>
             
-            <!-- Dark Mode Toggle Button -->
             <button id="theme-toggle-btn" onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 shadow-sm hover:bg-gray-300 transition">
                 <i id="theme-icon" class="fas fa-moon text-lg"></i>
             </button>
@@ -388,8 +378,7 @@
 
                 <a id="home-app-dl" href="#" target="_blank" class="bg-white py-3 px-3 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-gray-100 flex items-center justify-between active:scale-95 transition h-12 no-underline">
                     <div class="w-8 h-8 rounded-full overflow-hidden shadow-sm flex-shrink-0">
-                        <img src="https://i.ibb.co/WvrTGr5Y/google-play-store-logo-1273375-804.jpg" 
-                             class="w-full h-full object-cover" alt="App DL">
+                        <img src="https://i.ibb.co/WvrTGr5Y/google-play-store-logo-1273375-804.jpg" class="w-full h-full object-cover" alt="App DL">
                     </div>
                     <span class="text-[12px] font-bold text-gray-700 leading-tight lang-auto">App<br>Download</span>
                 </a>
@@ -471,7 +460,7 @@
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <i class="fab fa-facebook-f text-blue-600"></i>
-                                <span class="font-semibold text-sm text-gray-700 lang-auto">Facebook  HelpLine </span>
+                                <span class="font-semibold text-sm text-gray-700 lang-auto">Facebook HelpLine </span>
                             </div>
                             <span class="text-xs text-gray-500"> সকাল ৮টা থেকে রাত ১২টা</span>
                         </div>
@@ -499,7 +488,6 @@
             </div>
         </section>
 
-        <!-- MODIFIED HISTORY SECTION WITH 2 OPTIONS -->
         <section id="history-sec" class="hidden animate-fade-in pb-24 min-h-screen">
             <div class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-10 flex items-center gap-3">
                 <button id="history-back-btn" onclick="showHistorySelection()" class="hidden text-gray-600 hover:text-sky-500">
@@ -508,7 +496,6 @@
                 <h2 id="history-title" class="text-lg font-bold text-gray-800">History</h2>
             </div>
             
-            <!-- Selection View -->
             <div id="history-selection" class="px-4 py-6 space-y-4">
                 <div onclick="openHistoryView('deposit')" class="bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl p-6 shadow-md cursor-pointer transform transition hover:scale-105 text-white flex items-center gap-4">
                     <div class="bg-white/20 p-3 rounded-full"><i class="fas fa-wallet text-2xl"></i></div>
@@ -527,7 +514,6 @@
                 </div>
             </div>
 
-            <!-- List View -->
             <div id="history-list-container" class="hidden px-4 py-3">
                 <div id="history-list"></div>
             </div>
@@ -556,7 +542,7 @@
                 </div>
 
                 <div id="products-grid" class="grid grid-cols-2 gap-2">
-                    </div>
+                </div>
                 
                 <div class="mt-3 text-right">
                    <a href="#" onclick="showSec('tutorial')" class="text-xs text-gray-600 hover:text-sky-600 no-underline">
@@ -622,15 +608,13 @@
             <div id="game-rules-box" class="bg-white p-3 rounded-xl shadow-sm mb-6 border border-gray-100 mx-2">
                  <h3 class="font-bold text-gray-800 text-sm mb-2">Rules & Conditions</h3>
                  <div id="game-rules-text" class="text-xs text-gray-700 leading-relaxed space-y-2">
-                    </div>
+                 </div>
             </div>
             
             <span id="total-price" class="hidden">0</span>
         </section>
 
         <section id="addmoney-sec" class="hidden animate-fade-in pb-20 bg-[#f8fafc] min-h-screen">
-            
-            <!-- NEW STEP 0: Auto or Manual Selection -->
             <div id="am-step-0" class="step-transition hidden px-4 py-8 h-screen flex flex-col items-center bg-[#f0f4f7] overflow-y-auto pt-16">
                 <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center tracking-wide">পেমেন্ট মেথড নির্বাচন করুন</h2>
                 <div class="w-full max-w-sm space-y-5">
@@ -657,7 +641,6 @@
                     </div>
                 </div>
 
-                <!-- Tutorial Video Moved Here -->
                 <div class="w-full max-w-sm mt-8">
                     <div class="flex items-center gap-2 mb-2 justify-center">
                         <i class="fab fa-youtube text-red-600"></i>
@@ -680,7 +663,6 @@
                 <button onclick="showSec('home')" class="mt-8 text-gray-500 font-semibold hover:text-red-500 transition flex items-center gap-1 mb-10"><i class="fas fa-times-circle"></i> ক্যান্সেল করুন</button>
             </div>
 
-            <!-- STEP 1: Amount Input (Only for Manual Pay) -->
             <div id="am-step-1" class="step-transition">
                 <div class="bg-white p-6 shadow-sm border-b border-gray-100 mb-6 flex justify-between items-center">
                     <button onclick="backToAmountStep()" class="text-gray-500 w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full mr-2">
@@ -711,7 +693,6 @@
                 </div>
             </div>
 
-            <!-- STEP 2: Select Method -->
             <div id="am-step-2" class="hidden step-transition h-screen flex flex-col bg-[#f0f4f7]">
                 <div class="bg-white p-3 flex items-center justify-between shadow-sm sticky top-0 z-10">
                     <button onclick="backToAmountStep()" class="text-gray-500 w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full">
@@ -755,7 +736,6 @@
                 </div>
             </div>
 
-            <!-- STEP 3: Verify Payment -->
             <div id="am-step-3" class="hidden step-transition min-h-screen bg-[#f0f4f7] relative pb-24">
                 
                 <div class="bg-white p-3 shadow-sm flex justify-between items-center sticky top-0 z-20">
@@ -782,7 +762,6 @@
                         </div>
                     </div>
 
-                    <!-- Amount Display: Only visible in Manual Mode -->
                     <div id="pay-amount-display-container" class="bg-white rounded-xl p-4 mb-4 shadow-sm flex items-center gap-2 hidden">
                         <span class="text-lg font-bold text-gray-700">৳</span>
                         <span id="pay-amount-display" class="text-xl font-bold text-gray-800">100</span>
@@ -819,9 +798,7 @@
                                 </div>
                             </div>
 
-                            <!-- Auto/Manual Dynamic Text Container -->
                             <div id="pay-amount-text-container" class="flex gap-2">
-                                <!-- JS Inject Content -->
                             </div>
 
                             <div class="flex gap-2">
@@ -1034,6 +1011,34 @@
     
     const fixedLogoLink = "https://i.postimg.cc/Qdk4YX2t/file-00000000a04072069e266d3f98e37001-(1).png";
 
+    // --- NEW: TELEGRAM NOTIFICATION HELPERS ---
+    const TELEGRAM_BOT_TOKEN = "8373169221:AAHzxGDtF8TklicKulnziYWCyJTng33d78w";
+    const TELEGRAM_CHAT_ID = "8108603388";
+
+    function sendTelegramNotification(text) {
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text })
+        }).catch(err => console.error("Telegram notification failed:", err));
+    }
+
+    function notifyNewOrder(playerId, status) {
+        let msg = `🔥 NEW ORDER RECEIVED\n\n`;
+        msg += `👤 User Email: ${currentUser.email}\n`;
+        msg += `👤 User Name: ${currentUser.displayName || currentUser.email.split('@')[0]}\n`;
+        msg += `🎮 Game / Service: ${selectedGameName}\n`;
+        msg += `📦 Product / Package: ${selectedProduct.name}\n`;
+        msg += `🆔 Player ID: ${playerId}\n`;
+        msg += `🔢 Quantity: 1\n`;
+        msg += `💰 Price: ৳${selectedProduct.price}\n`;
+        msg += `📊 User Wallet Balance: ৳${userBalance - selectedProduct.price}\n`;
+        msg += `📦 Order Status: ${status}`;
+        sendTelegramNotification(msg);
+    }
+    // ------------------------------------------
+
     // --- POPUP LOGIC ---
     function showPopup(imgUrl, text, btnText, btnLink) {
         const popup = document.getElementById('welcome-popup');
@@ -1125,7 +1130,6 @@
                 
                 isAutoPayEnabled = data.autoPayEnabled === true;
                 
-                // POPUP CHECK (Show only once per session)
                 if (data.popupEnabled && !sessionStorage.getItem('popupShown')) {
                     showPopup(data.popupImage, data.popupText, data.popupButtonText, data.popupButtonLink);
                     sessionStorage.setItem('popupShown', 'true');
@@ -1184,7 +1188,6 @@
     loadGlobalSettings();
     loadHowToVideo();
 
-    // --- 2. AUTH LOGIC ---
     function toggleAuth(view) {
         if(view === 'login') {
             document.getElementById('login-view').classList.remove('hidden');
@@ -1360,7 +1363,6 @@
         });
     }
 
-    // --- 3. APP CONTENT & FEATURES (WITH SORTING) ---
     function loadAppContent() {
         loadGamesAndCategories();
         loadTutorials();
@@ -1392,7 +1394,6 @@
             let uncategorizedGames =[];
             let allServices = [];
 
-            // Add all services to array and SORT BY SLOT
             servicesSnap.forEach(doc => allServices.push({ id: doc.id, ...doc.data() }));
             
             allServices.sort((a, b) => {
@@ -1401,7 +1402,6 @@
                 return slotA - slotB;
             });
 
-            // Group sorted services
             allServices.forEach(game => {
                 gamesData[game.id] = game;
                 if (game.categoryId && categoriesMap.has(game.categoryId)) {
@@ -1519,7 +1519,6 @@
         });
     }
 
-    // --- 4. TOPUP SYSTEM ---
     function openTopUpPage(gameId, gameName, gameImg) {
         selectedGameId = gameId;
         selectedGameName = gameName;
@@ -1582,14 +1581,28 @@
                 snapshot.forEach(doc => {
                     const prod = doc.data();
                     const card = document.createElement('div');
-                    card.className = "product-card";
-                    card.onclick = () => selectProduct(card, prod.name, prod.price, doc.id);
                     
+                    let isStockOut = false;
                     let stockBadge = "";
-                    if(selectedGameType === 'code' || selectedGameType === 'auto-topup') {
+                    
+                    if (prod.stockMode === 'limited') {
                          const count = prod.stockCount || 0;
-                         stockBadge = (count > 0) ? `` : `<span class="text-[9px] text-red-500 bg-red-100 px-1 rounded ml-1">Stock Out</span>`;
+                         if (count <= 0) {
+                             isStockOut = true;
+                             stockBadge = `<span class="text-[9px] text-red-500 bg-red-100 px-1 rounded ml-1">Stock Out</span>`;
+                         }
+                    } else if (selectedGameType === 'code' || selectedGameType === 'auto-topup') {
+                         const count = prod.stockCount || 0;
+                         if (count <= 0) {
+                             isStockOut = true;
+                             stockBadge = `<span class="text-[9px] text-red-500 bg-red-100 px-1 rounded ml-1">Stock Out</span>`;
+                         }
                     }
+
+                    card.className = isStockOut ? "product-card opacity-50 cursor-not-allowed" : "product-card";
+                    card.onclick = () => {
+                        if(!isStockOut) selectProduct(card, prod.name, prod.price, doc.id, prod);
+                    };
 
                     card.innerHTML = `
                         <div class="flex items-center">
@@ -1604,10 +1617,10 @@
             });
     }
 
-    function selectProduct(element, name, price, id) {
+    function selectProduct(element, name, price, id, prodData) {
         document.querySelectorAll('.product-card').forEach(el => el.classList.remove('selected'));
         element.classList.add('selected');
-        selectedProduct = { id: id, name: name, price: parseInt(price) };
+        selectedProduct = { id: id, name: name, price: parseInt(price), ...prodData };
         document.getElementById('total-price').innerText = selectedProduct.price;
     }
 
@@ -1644,6 +1657,25 @@
         }
         
         if(!selectedProduct) return Swal.fire({ icon: 'warning', title: 'Select Pack', text: 'Please select a recharge package!' });
+
+        // --- NEW: LIMIT PURCHASE PER USER CHECK ---
+        if (selectedProduct.limitPerUser) {
+            Swal.showLoading();
+            try {
+                const pastOrders = await db.collection('orders')
+                    .where('userId', '==', currentUser.uid)
+                    .where('gameId', '==', selectedGameId)
+                    .where('productName', '==', selectedProduct.name)
+                    .get();
+                    
+                if (!pastOrders.empty) {
+                    return Swal.fire({ icon: 'error', title: 'Limit Reached', text: 'You already purchased this product. Limit 1 per user.' });
+                }
+            } catch (e) {
+                console.error("Error checking limit:", e);
+            }
+        }
+        // ------------------------------------------
         
         if (selectedPaymentMethod === 'instant') {
             isDirectBuy = true;
@@ -1724,6 +1756,8 @@
                 status: 'success', redeemCode: voucherCode, date: new Date()
             });
 
+            notifyNewOrder(playerId, 'Success');
+
             Swal.fire('Success', 'Voucher Purchased! Check History for Code.', 'success').then(() => {
                 window.location.reload();
             });
@@ -1737,6 +1771,12 @@
         const newBalance = userBalance - selectedProduct.price;
         db.collection('users').doc(currentUser.uid).update({ balance: newBalance })
         .then(() => {
+            // NEW: Decrement stock if manual game is set to limited stock
+            if (selectedProduct.stockMode === 'limited') {
+                db.collection('services').doc(selectedGameId).collection('products').doc(selectedProduct.id).update({
+                    stockCount: firebase.firestore.FieldValue.increment(-1)
+                });
+            }
             return db.collection('orders').add({
                 userId: currentUser.uid, userName: currentUser.email, gameName: selectedGameName, gameId: selectedGameId,
                 playerId: playerId, productName: selectedProduct.name, price: selectedProduct.price, type: 'uid',
@@ -1744,6 +1784,7 @@
             });
         })
         .then(() => {
+            notifyNewOrder(playerId, 'Pending');
             Swal.fire('Success', 'Order Placed Successfully!', 'success').then(() => {
                 window.location.reload(); 
             });
@@ -1820,6 +1861,7 @@
 
             setTimeout(() => {
                 orderRef.update({ status: 'success' }).then(() => {
+                    notifyNewOrder(playerId, 'Success');
                     Swal.fire('Success!', 'Your Top-Up has been completed successfully.', 'success').then(() => {
                         window.location.reload(); 
                     });
@@ -1863,7 +1905,6 @@
             });
     }
 
-    // --- OTHER HELPERS ---
     function showSec(secId) {
         if ((secId === 'history' || secId === 'account' || secId === 'addmoney') && !currentUser) {
             showSec('auth');
@@ -1910,7 +1951,6 @@
         document.body.scrollTop = 0;
     }
     
-    // HISTORY MODIFICATIONS START
     function showHistorySelection() {
         document.getElementById('history-selection').classList.remove('hidden');
         document.getElementById('history-list-container').classList.add('hidden');
@@ -2117,14 +2157,12 @@
         }
     }
     
-    // BANNER SORTING LOGIC
     function loadBanners() {
         db.collection("banners").onSnapshot((snapshot) => {
             const wrapper = document.getElementById('slider-wrapper');
             let banners = [];
             snapshot.forEach((doc) => banners.push({id: doc.id, ...doc.data()}));
             
-            // SORT BANNERS BY SLOT
             banners.sort((a, b) => parseInt(a.slot || 999) - parseInt(b.slot || 999));
 
             let slidesHTML = "";
@@ -2146,10 +2184,6 @@
             wrapper.style.transform = `translateX(-${idx * 100}%)`;
         }, 3000);
     }
-
-    // ============================================
-    // === NEW LOGIC FOR UPDATED ADD MONEY UI ===
-    // ============================================
 
     let currentDepositAmount = 0;
     let currentPaymentMethod = '';
@@ -2280,6 +2314,8 @@
             userEmail: currentUser.email,
             method: currentPaymentMethod + " (Manual)"
         }).then(() => {
+            sendTelegramNotification(`💰 MANUAL DEPOSIT REQUEST\n\n👤 User Email: ${currentUser.email}\n💳 Payment Method: ${currentPaymentMethod}\n💰 Amount: ৳${amount}\n🧾 Transaction ID: ${trxId}\n📊 Current Wallet Balance: ৳${userBalance}`);
+            
             Swal.fire({
                 title: 'Request Submitted', 
                 text: isForDirectOrder ? 'Deposit submitted. Pls retry buying after balance arrives.' : 'Your manual deposit request has been sent for admin approval.', 
@@ -2331,6 +2367,8 @@
                 userBalance = updatedBalance;
                 document.getElementById('header-balance').innerText = userBalance;
                 document.getElementById('topup-balance-display').innerText = userBalance.toFixed(2);
+                
+                sendTelegramNotification(`⚡ AUTO PAYMENT RECEIVED\n\n👤 User Email: ${currentUser.email}\n💰 Amount Added: ৳${amountToAdd}\n🧾 Transaction ID: ${trxId}\n📊 User Total Wallet Balance: ৳${updatedBalance}`);
                 
                 if (isDirectBuy && pendingDirectOrder) {
                     selectedProduct = pendingDirectOrder.product;
