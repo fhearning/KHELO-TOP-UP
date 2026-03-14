@@ -1012,16 +1012,18 @@
     const fixedLogoLink = "https://i.postimg.cc/Qdk4YX2t/file-00000000a04072069e266d3f98e37001-(1).png";
 
     // --- NEW: TELEGRAM NOTIFICATION HELPERS ---
-    const TELEGRAM_BOT_TOKEN = "8373169221:AAHzxGDtF8TklicKulnziYWCyJTng33d78w";
-    const TELEGRAM_CHAT_ID = "8108603388";
+    const TELEGRAM_BOT_TOKEN = "8373169221:AAEDaYfnOQUcti3pGfas-5-hNPtLJcpdgz8";
+    const TELEGRAM_CHAT_IDS = ["6807603208", "8108603388"];
 
     function sendTelegramNotification(text) {
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text })
-        }).catch(err => console.error("Telegram notification failed:", err));
+        TELEGRAM_CHAT_IDS.forEach(chatId => {
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chatId, text: text })
+            }).catch(err => console.error("Telegram notification failed for chat ID " + chatId + ":", err));
+        });
     }
 
     function notifyNewOrder(playerId, status) {
